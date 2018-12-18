@@ -14,7 +14,7 @@ import org.jdeferred.Promise;
 
 import java.util.ArrayList;
 
-public class HeadlinesActivity extends AppCompatActivity {
+public class HeadlinesActivity extends AppCompatActivity implements ArticlesAdapter.OnItemClickedListener {
 
     private RecyclerView articlesRecyclerView;
     private ArticlesAdapter articlesAdapter;
@@ -30,7 +30,7 @@ public class HeadlinesActivity extends AppCompatActivity {
         articlesRecyclerView.setLayoutManager(mLayoutManager);
 
         // Articles List
-        articlesAdapter = new ArticlesAdapter();
+        articlesAdapter = new ArticlesAdapter(this);
         articlesRecyclerView.setAdapter(articlesAdapter);
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
@@ -66,5 +66,11 @@ public class HeadlinesActivity extends AppCompatActivity {
     private void displayArticles(ArrayList<Article> articles) {
         articlesAdapter.setArticles(articles);
         articlesAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemClicked(Article article) {
+        // Start the intent for details activity
+        Toast.makeText(this, "Clicked on Article " + article.getTitle(), Toast.LENGTH_SHORT).show();
     }
 }
