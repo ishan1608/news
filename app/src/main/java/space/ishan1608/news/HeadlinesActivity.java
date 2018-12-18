@@ -1,10 +1,10 @@
 package space.ishan1608.news;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import org.jdeferred.AlwaysCallback;
@@ -16,10 +16,22 @@ import java.util.ArrayList;
 
 public class HeadlinesActivity extends AppCompatActivity {
 
+    private RecyclerView articlesRecyclerView;
+    private ArticlesAdapter articlesAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_headlines);
+
+        articlesRecyclerView = findViewById(R.id.articles_recycler_view);
+
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        articlesRecyclerView.setLayoutManager(mLayoutManager);
+
+        // Articles List
+        articlesAdapter = new ArticlesAdapter();
+        articlesRecyclerView.setAdapter(articlesAdapter);
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Fetching news...");
@@ -32,7 +44,7 @@ public class HeadlinesActivity extends AppCompatActivity {
         articlesPromise.done(new DoneCallback<ArrayList<Article>>() {
             @Override
             public void onDone(ArrayList<Article> articles) {
-                Log.e("TEST", "Downloaded Articles");
+                displayArticles(articles);
             }
         }).fail(new FailCallback<String>() {
             @Override
@@ -49,5 +61,10 @@ public class HeadlinesActivity extends AppCompatActivity {
 
     private void displayError() {
         Toast.makeText(this, "Error fetching news", Toast.LENGTH_LONG).show();
+    }
+
+    private void displayArticles(ArrayList<Article> articles) {
+        articlesAdapter.setArticles(articles);
+        articlesAdapter.notifyDataSetChanged();
     }
 }
