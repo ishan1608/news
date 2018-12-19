@@ -49,8 +49,13 @@ public class HeadlinesActivity extends AppCompatActivity implements ArticlesAdap
         Promise<ArrayList<Article>, String, Void> articlesPromise = newsProvider.fetchArticles();
         articlesPromise.done(new DoneCallback<ArrayList<Article>>() {
             @Override
-            public void onDone(ArrayList<Article> articles) {
-                displayArticles(articles);
+            public void onDone(final ArrayList<Article> articles) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        displayArticles(articles);
+                    }
+                });
             }
         }).fail(new FailCallback<String>() {
             @Override
